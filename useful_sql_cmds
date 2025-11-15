@@ -1,0 +1,16 @@
+=========================================================
+
+When column needs to be updated/modified:
+
+atter table 'table_name'
+modify 'column_name ...';
+
+--------
+example:
+--------
+
+atter table users
+modify id int primary key auto_increment;
+
+=========================================================
+
