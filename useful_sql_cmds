@@ -9,8 +9,16 @@ modify 'column_name ...';
 example:
 --------
 
-atter table users
+alter table users
 modify id int primary key auto_increment;
+
+--------
+example: (adding new column and setting it as reference to another table)
+--------
+
+alter table users
+add gender varchar(10),
+add FOREIGN KEY (gender) REFERENCES genders(type);
 
 =========================================================
 

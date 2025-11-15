@@ -3,29 +3,20 @@
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $name = $_POST["name"];
-    $surname = $_POST["surname"];
     
     try {
         require_once "inc_dtbHandler.php";
 
-        $query = "INSERT INTO users (name, surname) 
-        VALUES (:name, :surname)";
-
-
+        $query = "SELECT * FROM users;";
 
         $statement = $connection->prepare($query);
         
-        $statement->bindParam(":name", $name);
-        $statement->bindParam(":surname", $surname);
-
         $statement->execute();
+        $results = $statement->fetchAll();
 
 
-        
-        header("Location: ../index.php");
-        
     } catch (PDOException $e) {
+
         die("Query failed: " . $e->getMessage());
     }
 
