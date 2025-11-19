@@ -7,9 +7,8 @@
 </head>
 <body>
     <% include Header %>
-    
+
     <main>
-        <h1 class="title">$Title</h1>
         $Layout
     </main>
 
