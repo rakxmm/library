@@ -127,6 +127,18 @@ footer {
     padding: 1rem 0;
 }
 
+.book-genres ul {
+    list-style: none;
+    display: flex;
+    gap: 0.2rem;
+}
+
+.book-genres li {
+    background-color: rgba(204, 204, 204, 0.507);
+    border-radius: 0.5rem;
+    padding: 0 0.5rem ;
+}
+
 .book-author {
     font-style:italic;
 }

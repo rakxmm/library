@@ -1,8 +1,8 @@
 <% include BreadcrumbsItems %>
     <section class="book">
             <div class="book-image">
-                <% if $Book.Image %>
-                    <img src="$Image.URL" alt="Name of the Wind - book coverage">
+                <% if $Book.Cover %>
+                    <img src="$Book.Cover.URL" alt="Name of the Wind - book coverage">
                 <% else %>
                     <span class="image-not-found">{Image not found}</span>
                 <% end_if %>
@@ -26,6 +26,15 @@
                     <% end_if %>
                 </div>
                  
+                <div class="book-genres">
+                    <ul>
+                        <% loop $Book.Genres %>
+                            <li>
+                                $Title
+                            </li>
+                        <% end_loop %>
+                    </ul>
+                </div>
 
                 <div class="book-description">
                     

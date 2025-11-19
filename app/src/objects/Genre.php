@@ -33,7 +33,7 @@ class Genre extends DataObject {
 
         $existing = Genre::get()->filter(
             'Title', $this->Title
-        );
+        )->exclude('ID', $this->ID);
 
         if ($existing->exists())
         {
