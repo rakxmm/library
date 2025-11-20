@@ -3,6 +3,7 @@
 namespace objects;
 
 use pages\LibraryPage;
+use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\LiteralField;
@@ -12,10 +13,15 @@ use function PHPSTORM_META\map;
 
 class BookCopy extends DataObject {
 
+    private static $db = [
+        'isBorrowed' => 'Boolean'
+    ];
+
     private static $has_one = [
         'LibraryPage' => LibraryPage::class,
         'Book' => Book::class,
-        'User' => User::class
+        'User' => User::class,
+        
     ];
 
     
@@ -32,6 +38,8 @@ class BookCopy extends DataObject {
             $copy_field = LiteralField::create('BookTitle', 'Title of the book: <b>' . $this->Book()->Title . '</b>');
         }
 
+
+
         $fields = FieldList::create($copy_field);
 
 
@@ -41,7 +49,8 @@ class BookCopy extends DataObject {
 
     private static $summary_fields = [
         'ID' => "Copy ID",
-        'Book.Title' => 'Book title'
+        'Book.Title' => 'Book title',
+        'isBorrowed.Nice' => 'Is borrowed?'
     ];
 };
 

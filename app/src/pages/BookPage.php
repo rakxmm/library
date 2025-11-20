@@ -47,7 +47,6 @@ class BookPage extends Page
 
     public function getCMSFields()
     {   
-
         $fields = FieldList::create(
             SearchableDropdownField::create(
                 'BookID',

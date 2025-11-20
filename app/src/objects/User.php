@@ -2,6 +2,8 @@
 
 namespace objects;
 
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
 
 class User extends DataObject {
@@ -17,6 +19,27 @@ class User extends DataObject {
 
     public function getFullName() {
         return $this->Name . ' ' . $this->Surname;
+    } 
+
+    public function getCMSFields()
+    {   
+
+        $name_field = TextField::create(
+                'Name',
+                'First name'
+        );
+
+        $surname_field = TextField::create(
+                'Surname',
+                'Last name'
+        );
+
+        $fields = FieldList::create(
+            $name_field,
+            $surname_field
+        );
+        
+        return $fields;
     }
 
 };

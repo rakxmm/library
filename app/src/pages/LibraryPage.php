@@ -27,53 +27,7 @@ class LibraryPage extends Page
     ];
 
 
-    public function getCMSFields()
-    {   
-        $fields = parent::getCMSFields();
-
-        $fields->addFieldToTab(
-            'Root.Books',
-            GridField::create(
-                'Books',
-                'Books in the library',
-                $this->Books(),
-                GridFieldConfig_RecordEditor::create()
-            )
-        );
-
-        $fields->addFieldToTab(
-            'Root.Authors',
-            GridField::create(
-                'Authors',
-                'Authors',
-                $this->Authors(),
-                GridFieldConfig_RecordEditor::create()
-            )
-        );
-
-        $fields->addFieldToTab(
-            'Root.Genres',
-            GridField::create(
-                'Genres',
-                'Genres',
-                $this->Genres(),
-                GridFieldConfig_RecordEditor::create()
-            )
-        );
-
-        $fields->addFieldToTab(
-            'Root.BookCopies',
-            GridField::create(
-                'BookCopies',
-                'BookCopies',
-                $this->BookCopies(),
-                GridFieldConfig_RecordEditor::create()
-            )
-        );
-
-
-        return $fields;
-    }
+    
 }
 
 
