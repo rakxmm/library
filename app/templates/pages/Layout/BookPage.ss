@@ -19,7 +19,7 @@
                 <div class="book-author">
                     Written by
                     
-                    <% if $Book.AuthorFullName %>
+                    <% if $Book.Author %>
                         $Book.AuthorFullName
                     <% else %>
                         {Author not found}

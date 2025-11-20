@@ -2,11 +2,14 @@
 
 namespace pages;
 
+use Exception;
 use objects\Book;
 
 use Page;
 use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\SearchableDropdownField;
+
 
 class BookPage extends Page 
 {
@@ -24,7 +27,7 @@ class BookPage extends Page
     
     protected function onBeforeWrite()
     {
-        parent::onBeforeWrite();
+         parent::onBeforeWrite();
 
         if ($this->Book()->exists()) {
             $this->Title = $this->Book()->Title;
@@ -34,35 +37,44 @@ class BookPage extends Page
             $this->URLSegment = $link;
         };
 
-
     }
+
+    private static $allowed_parents = [
+        LibraryPage::class
+    ];
+
+    
 
     public function getCMSFields()
     {   
-        $fields = parent::getCMSFields();
-        
-        $fields->addFieldToTab(
-            'Root.Main', 
+
+        $fields = FieldList::create(
             SearchableDropdownField::create(
                 'BookID',
                 'Book',
                 Book::get()
-            ),
-            'Metadata'
-            
-        );
-
-        $fields->removeFieldsFromTab('Root.Main',
-            [   
-                // 'Metadata',
-                'MenuTitle',
-                'Title',
-                'Content',
-                'URLSegment'
-            ]
-        );
+            )
+            );
 
         return $fields;
+    }
+
+    public function validate()
+    {
+        $result = parent::validate();
+
+        $existing = BookPage::get()->filter('BookID', $this->BookID)->exclude('ID', $this->ID);
+
+        if ($existing->exists()) {
+            $result->addError('Page with such book already exists!');
+        }
+
+        $parent = $this->Parent();
+        if ($parent && ! $parent instanceof LibraryPage) {
+            $result->addError('BookPage can be inserted only as child of LibraryPage!');
+        }
+
+        return $result;
     }
 }
 

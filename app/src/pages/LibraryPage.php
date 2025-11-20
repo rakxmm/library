@@ -5,6 +5,7 @@ namespace pages;
 use objects\Book;
 use Page;
 use objects\BookAuthor;
+use objects\BookCopy;
 use objects\Genre;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
@@ -21,7 +22,8 @@ class LibraryPage extends Page
     private static $has_many = [
         'Books' => Book::class,
         'Authors' => BookAuthor::class,
-        'Genres' => Genre::class
+        'Genres' => Genre::class,
+        'BookCopies' => BookCopy::class
     ];
 
 
@@ -55,6 +57,16 @@ class LibraryPage extends Page
                 'Genres',
                 'Genres',
                 $this->Genres(),
+                GridFieldConfig_RecordEditor::create()
+            )
+        );
+
+        $fields->addFieldToTab(
+            'Root.BookCopies',
+            GridField::create(
+                'BookCopies',
+                'BookCopies',
+                $this->BookCopies(),
                 GridFieldConfig_RecordEditor::create()
             )
         );
