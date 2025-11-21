@@ -8,6 +8,7 @@ use objects\BookCopy;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\SearchableDropdownField;
 use SilverStripe\ORM\DataObject;
 
@@ -23,22 +24,61 @@ class BookLoan extends DataObject {
         'BookCopy' => BookCopy::class
     ];
 
+
+    public function onAfterWrite()
+    {
+        
+        parent::onAfterWrite();
+        
+        $userID = $this->UserID;
+        $bookCopy = $this->BookCopy();
+        $bookCopy->UserID = $userID;
+        $bookCopy->write();
+
+    }
+
     public function getCMSFields()
     {   
+
         $fields = FieldList::create(
-            DropdownField::create(
+            SearchableDropdownField::create(
                 'UserID',
                 'Pass the user',
-                User::get()->map('ID', 'FullName')
-            ),
+                User::get()
+            )->setLabelField('FullName'),
             SearchableDropdownField::create(
                 'BookCopyID',
                 'Pass the bookcopy',
                 BookCopy::get()
-            )->setLabelField('Title')
-        );
+            )->setLabelField('Title'));
 
         return $fields;
+     
+    }
+
+    public function canEdit($member = null)
+    {
+        // Ak už bol záznam uložený (existuje ID), zakáž editáciu
+        if ($this->ID) {
+            return false;
+        }
+
+        return parent::canEdit($member);
+    }
+
+    public function validate()
+    {
+        $result = parent::validate();
+
+        if (!$this->BookCopyID) {
+            $result->addError('BookCopy is required field!');
+        } 
+        if (!$this->UserID) {
+            $result->addError('User is required field!');
+        }
+
+        return $result;
+
     }
 
     private static $summary_fields = [

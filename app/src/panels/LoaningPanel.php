@@ -8,6 +8,9 @@ use objects\BookCopy;
 
 use objects\User;
 use SilverStripe\Admin\ModelAdmin;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Dev\Debug;
+use SilverStripe\Forms\GridField\GridFieldConfig_RecordViewer;
 
 class LoaningPanel extends ModelAdmin {
 
@@ -20,10 +23,8 @@ class LoaningPanel extends ModelAdmin {
         BookCopy::class,
         User::class
     ];
-
     
-
-
+    
 }
 
 

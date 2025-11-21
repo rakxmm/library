@@ -28,6 +28,19 @@ class BookCopy extends DataObject {
         return $this->Book()->Title;
     }
 
+    public function onBeforeWrite()
+    {
+    
+        parent::onBeforeWrite();
+
+        $user = $this->UserID;
+
+        if ($user) {
+            $this->isBorrowed = true;
+        } else {
+            $this->isBorrowed = false;
+        }
+    }
     
 
     public function getCMSFields()

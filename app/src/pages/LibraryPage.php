@@ -34,13 +34,44 @@ class LibraryPage extends Page
 class LibraryPageController extends PageController {
 
     private static $allowed_actions = [
-        'endLoan'
+        'endLoan',
+        'getAvailableCopies'
     ];
 
 
+    public function getAvailableCopies(HTTPRequest $request) {
+        
+        $userID = $request->getVar('userID');
+
+        $userCopiesTitles = BookCopy::get()->filter(
+            [
+                'UserID' => $userID
+            ]
+        )->getField('BookID');
+
+        
+
+        $copies = BookCopy::get()->exclude(
+            [
+                'BookID' => $userCopiesTitles
+            ]
+        );
+
+        return json_encode(
+            $copies->map('ID', 'Title')->toArray()
+        );
+    }
+    
+
     public function endLoan(HTTPRequest $req) {
-        $copyID = $req->param('ID');
-        $userID = $req->param('OtherID');
+
+        $member = Security::getCurrentUser();
+        if (!$member) {
+            return $this->httpError(403, 'This page is forbidden for you');
+        }
+
+        $copyID = $req->getVar('copyID');
+        $userID = $req->getVar('userID');
 
         $loan = BookLoan::get()->filter([
             'UserID' => $userID,
@@ -49,7 +80,13 @@ class LibraryPageController extends PageController {
 
 
         if ($loan) {
-            
+           $bookcopy = BookCopy::get()->byID($loan->BookCopyID);
+           toto nefunguje
+            if ($bookcopy) {
+                $bookcopy->UserID = 0;
+                $bookcopy->write();
+        }
+
             $loan->hasExpired = true;
             $loan->write();
         }
