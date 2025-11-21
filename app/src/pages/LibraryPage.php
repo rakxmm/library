@@ -6,11 +6,12 @@ use objects\Book;
 use Page;
 use objects\BookAuthor;
 use objects\BookCopy;
+use objects\BookLoan;
 use objects\Genre;
-use SilverStripe\Forms\GridField\GridField;
-use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
-
-use function PHPSTORM_META\map;
+use PageController;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Control\HTTPResponse;
+use SilverStripe\Security\Security;
 
 class LibraryPage extends Page 
 {
@@ -30,6 +31,37 @@ class LibraryPage extends Page
     
 }
 
+class LibraryPageController extends PageController {
 
+    private static $allowed_actions = [
+        'endLoan'
+    ];
+
+
+    public function endLoan(HTTPRequest $req) {
+        $copyID = $req->param('ID');
+        $userID = $req->param('OtherID');
+
+        $loan = BookLoan::get()->filter([
+            'UserID' => $userID,
+            'BookCopyID' => $copyID
+        ])->first();
+
+
+        if ($loan) {
+            
+            $loan->hasExpired = true;
+            $loan->write();
+        }
+
+        return [
+            'BookLoan' => $loan
+        ];
+        
+    }
+
+    
+
+}
 
 ?>

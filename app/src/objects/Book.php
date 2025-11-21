@@ -4,10 +4,10 @@
 namespace objects;
 
 use pages\LibraryPage;
+
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\Assets\Image;
 use SilverStripe\Forms\DateField;
-use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\ListboxField;
 use SilverStripe\Forms\NumericField;
@@ -49,6 +49,9 @@ class Book extends DataObject {
         return $this->Author()->FullName;
     }
 
+
+
+
     public function getCMSFields()
     {   
       
@@ -68,6 +71,8 @@ class Book extends DataObject {
 
         return $fields;
     }
+
+    
 };
 
 

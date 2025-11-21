@@ -3,8 +3,9 @@
 
 namespace panels;
 
+use objects\BookLoan;
 use objects\BookCopy;
-use objects\Loan;
+
 use objects\User;
 use SilverStripe\Admin\ModelAdmin;
 
@@ -15,7 +16,7 @@ class LoaningPanel extends ModelAdmin {
     private static $url_segment = 'loaning-dashboard';
 
     private static $managed_models = [
-        Loan::class,
+        BookLoan::class,
         BookCopy::class,
         User::class
     ];

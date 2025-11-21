@@ -14,7 +14,7 @@ class User extends DataObject {
     ];
 
     private static $has_many = [
-        'Book'=>Book::class
+        'Loan'=>BookLoan::class
     ];
 
     public function getFullName() {

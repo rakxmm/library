@@ -24,6 +24,10 @@ class BookCopy extends DataObject {
         
     ];
 
+    public function getTitle() {
+        return $this->Book()->Title;
+    }
+
     
 
     public function getCMSFields()
