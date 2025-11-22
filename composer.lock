@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d3ad24810508feccc36ea093f0849712",
+    "content-hash": "e7c718337a4e99f4e1b8214ebcd867bb",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -2251,6 +2251,60 @@
                 }
             ],
             "time": "2024-03-02T06:30:58+00:00"
+        },
+        {
+            "name": "sheadawson/silverstripe-dependentdropdownfield",
+            "version": "3.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sheadawson/silverstripe-dependentdropdownfield.git",
+                "reference": "1b8ad1118c7c83c7f303301d8699c74a87c6e54f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sheadawson/silverstripe-dependentdropdownfield/zipball/1b8ad1118c7c83c7f303301d8699c74a87c6e54f",
+                "reference": "1b8ad1118c7c83c7f303301d8699c74a87c6e54f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4",
+                "silverstripe/framework": "^4.11 || ^5",
+                "silverstripe/vendor-plugin": "^1 || ^2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "silverstripe-vendormodule",
+            "extra": {
+                "expose": [
+                    "client"
+                ],
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                },
+                "installer-name": "dependentdropdownfield"
+            },
+            "autoload": {
+                "psr-4": {
+                    "Sheadawson\\DependentDropdown\\": "src/",
+                    "Sheadawson\\DependentDropdown\\Tests\\": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "A silverstripe dropdown field that has it's options populated via ajax, based on the value of the field it depends on",
+            "homepage": "https://github.com/sheadawson/silverstripe-dependentdropdownfield",
+            "keywords": [
+                "dropdown",
+                "silverstripe"
+            ],
+            "support": {
+                "issues": "https://github.com/sheadawson/silverstripe-dependentdropdownfield/issues",
+                "source": "https://github.com/sheadawson/silverstripe-dependentdropdownfield/tree/3.1.1"
+            },
+            "time": "2025-07-09T23:30:38+00:00"
         },
         {
             "name": "silverstripe-themes/simple",

@@ -8,6 +8,7 @@ use objects\BookAuthor;
 use objects\BookCopy;
 use objects\BookLoan;
 use objects\Genre;
+use objects\User;
 use PageController;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
@@ -35,32 +36,48 @@ class LibraryPageController extends PageController {
 
     private static $allowed_actions = [
         'endLoan',
-        'getAvailableCopies'
-    ];
+        'getAvailableCopies',
+        'getBorrowedCopy'
+    ];  
 
 
     public function getAvailableCopies(HTTPRequest $request) {
         
         $userID = $request->getVar('userID');
 
-        $userCopiesTitles = BookCopy::get()->filter(
-            [
-                'UserID' => $userID
-            ]
-        )->getField('BookID');
+        $user  = User::get()->byID($userID);
+        if (!$user) {
+            return $this->httpError(404, 'User not found!');
+        }
 
+        $userCopiesTitles = BookCopy::get()->filter(['UserID' => $userID]
+            )->column('BookID');
+
+        if ($userCopiesTitles) {
+            $copies = BookCopy::get()->exclude(
+                [
+                    'BookID' => $userCopiesTitles
+                ]
+            );
+
+            return json_encode(
+                $copies->map('ID', 'Title')->toArray()
+            );
+        }
+
+        return json_encode(BookCopy::get()->map('ID', 'Title')->toArray());
         
-
-        $copies = BookCopy::get()->exclude(
-            [
-                'BookID' => $userCopiesTitles
-            ]
-        );
-
-        return json_encode(
-            $copies->map('ID', 'Title')->toArray()
-        );
     }
+
+    public function getBorrowedCopy(HTTPRequest $request) {
+        $userID = $request->getVar('userID');
+        $bookID = $request->getVar('bookID');
+
+
+        echo BookCopy::get()->filter(['isBorrowed'=>true, 'UserID'=>$userID, 'BookID'=>$bookID])->exists() ? 'true' : 'false';
+
+    }
+    
     
 
     public function endLoan(HTTPRequest $req) {
@@ -75,20 +92,14 @@ class LibraryPageController extends PageController {
 
         $loan = BookLoan::get()->filter([
             'UserID' => $userID,
-            'BookCopyID' => $copyID
+            'BookCopyID' => $copyID,
+            'hasExpired' => false
         ])->first();
 
+            
 
         if ($loan) {
-           $bookcopy = BookCopy::get()->byID($loan->BookCopyID);
-           toto nefunguje
-            if ($bookcopy) {
-                $bookcopy->UserID = 0;
-                $bookcopy->write();
-        }
-
-            $loan->hasExpired = true;
-            $loan->write();
+            $loan->end();
         }
 
         return [

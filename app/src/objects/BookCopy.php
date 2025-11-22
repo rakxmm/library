@@ -3,10 +3,8 @@
 namespace objects;
 
 use pages\LibraryPage;
-use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\LiteralField;
 use SilverStripe\ORM\DataObject;
 
 use function PHPSTORM_META\map;
@@ -14,6 +12,7 @@ use function PHPSTORM_META\map;
 class BookCopy extends DataObject {
 
     private static $db = [
+        'ID_Title'=>'Varchar',
         'isBorrowed' => 'Boolean'
     ];
 
@@ -24,50 +23,66 @@ class BookCopy extends DataObject {
         
     ];
 
+    public function onAfterWrite()
+    {
+        parent::onAfterWrite();
+        $updated_title = '('. $this->ID . ') ' . $this->getTitle();    
+
+        if ($this->ID_Title != $updated_title) {
+            $this->ID_Title = $updated_title;
+            $this->write(false, false);
+        }
+
+    }
+
+    
+
     public function getTitle() {
         return $this->Book()->Title;
     }
 
-    public function onBeforeWrite()
-    {
-    
-        parent::onBeforeWrite();
+    public function setUser($userID) {
+        $this->UserID = $userID;
+        return $this;
+    }
 
-        $user = $this->UserID;
+    public function resetUser() {
+        return $this->setUser(null);
+    }
 
-        if ($user) {
-            $this->isBorrowed = true;
+    public function updateStatus() {
+        if ($this->UserID) {
+            $this->isBorrowed = true;   
         } else {
             $this->isBorrowed = false;
         }
+        return $this;
     }
-    
 
-    public function getCMSFields()
-    {
-        $copy_field = DropdownField::create(
+    public function getCMSFields() {
+        $fields = FieldList::create(DropdownField::create(
             'BookID',
             'Title of a book',
             Book::get()->map('ID', 'Title')
-        );
-        
-        if ($this->exists()) {
-            $copy_field = LiteralField::create('BookTitle', 'Title of the book: <b>' . $this->Book()->Title . '</b>');
-        }
-
-
-
-        $fields = FieldList::create($copy_field);
-
+        ));
 
         return $fields;
+    }
+
+
+    public function canEdit($member = null) {
+        if ($this->ID) {
+            return false;
+        }
+        return parent::canEdit($member);
     }
 
 
     private static $summary_fields = [
         'ID' => "Copy ID",
         'Book.Title' => 'Book title',
-        'isBorrowed.Nice' => 'Is borrowed?'
+        'isBorrowed.Nice' => 'Is borrowed?',
+        'User.FullName' =>'Borrowed by who?'
     ];
 };
 
