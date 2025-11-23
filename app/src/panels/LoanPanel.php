@@ -14,7 +14,6 @@ use SilverStripe\Forms\GridField\GridField_ColumnProvider;
 use SilverStripe\Forms\GridField\GridField_FormAction;
 use SilverStripe\Forms\GridField\GridFieldAddNewButton;
 use SilverStripe\Control\Controller;
-use SilverStripe\Dev\Debug;
 
 class LoanPanel extends ModelAdmin {
 

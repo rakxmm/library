@@ -5,15 +5,7 @@ namespace objects;
 
 use objects\User;
 use objects\BookCopy;
-use SebastianBergmann\Environment\Console;
-use Sheadawson\DependentDropdown\Forms\DependentDropdownField;
-use SilverStripe\Control\HTTPRequest;
-use SilverStripe\Dev\Debug;
-use SilverStripe\Forms\CheckboxField;
-use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\FormAction;
-use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\SearchableDropdownField;
 use SilverStripe\Forms\TabSet;
@@ -60,11 +52,7 @@ class BookLoan extends DataObject {
             ));
         }
 
-        if ($this->isInDB() && !$this->hasExpired) {
-            $fields->addFieldToTab('Root.Main',
-                CheckboxField::create('hasExpired', 'Expired')
-            );
-        }
+       
 
         return $fields;
     }
