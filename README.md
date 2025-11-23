@@ -8,9 +8,7 @@ Base project folder for a Silverstripe ([http://silverstripe.org](http://silvers
 ## Installation
 
 ```sh
-composer require silverstripe/framework
-composer require silverstripe/cms
-composer require silverstripe/admin
+composer create-project silverstripe/installer my-app
 ```
 
 See [Getting Started](https://docs.silverstripe.org/en/getting_started/) for more information.

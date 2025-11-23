@@ -15,4 +15,9 @@ SilverStripe\ORM\Connect\MySQLDatabase:
   charset: utf8mb4
   collation: utf8mb4_unicode_ci
 
-
+# Automatické vytvorenie defaultných dát po build
+SilverStripe\ORM\DatabaseAdmin:
+  create_default_records:
+    - 'SilverStripe\SiteConfig\SiteConfig'
+    - 'SilverStripe\Security\Group'
+    - 'SilverStripe\Security\Member'

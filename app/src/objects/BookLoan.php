@@ -131,16 +131,6 @@ class BookLoan extends DataObject {
 
     }
 
-    public function doEndLoan($data, $form) {
-    // Spusti tvoju existujúcu logiku
-    $this->end();
-
-    // Poskytni spätnú väzbu v CMS
-    $form->sessionMessage('Book successfully returned!', 'good');
-
-    // Refresh CMS form
-    return $this->getCMSFields();
-}
 
 
     public function end() {
@@ -148,9 +138,11 @@ class BookLoan extends DataObject {
         $copy = $this->BookCopy();
    
         $copy->setUser(null)->write();
-        echo $this->hasExpired;
+        echo 'hellou';
         
         $this->expire()->write();
+
+        return true;
     }
 
     private function expire() {
