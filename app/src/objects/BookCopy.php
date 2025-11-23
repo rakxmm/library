@@ -26,8 +26,7 @@ class BookCopy extends DataObject {
     public function onAfterWrite()
     {
         parent::onAfterWrite();
-        $updated_title = '('. $this->ID . ') ' . $this->getTitle();    
-
+        $updated_title = '('. $this->ID . ') ' . Book::getTitleById($this->BookID);    
         if ($this->ID_Title != $updated_title) {
             $this->ID_Title = $updated_title;
             $this->write(false, false);
@@ -35,28 +34,9 @@ class BookCopy extends DataObject {
 
     }
 
-    
-
-    public function getTitle() {
-        return $this->Book()->Title;
-    }
-
-    public function setUser($userID) {
-        $this->UserID = $userID;
-        return $this;
-    }
-
-    public function resetUser() {
-        return $this->setUser(null);
-    }
-
-    public function updateStatus() {
-        if ($this->UserID) {
-            $this->isBorrowed = true;   
-        } else {
-            $this->isBorrowed = false;
-        }
-        return $this;
+    public function validate()
+    {
+        return parent::validate();
     }
 
     public function getCMSFields() {
@@ -84,6 +64,27 @@ class BookCopy extends DataObject {
         'isBorrowed.Nice' => 'Is borrowed?',
         'User.FullName' =>'Borrowed by who?'
     ];
+
+    public function setUser($userID) {
+        $this->UserID = $userID;
+        if ($this->UserID) {
+            $this->isBorrowed = true;
+        } else {
+            $this->isBorrowed = false;
+        }
+        return $this;
+    }
+
+    public static function getBooksID($bookCopyID) {
+        $bookcopy =  BookCopy::get()->byID($bookCopyID);
+
+        return ($bookcopy && $bookcopy->exists()) ? $bookcopy->BookID : null;
+    }
+
+    
+
+
+
 };
 
 

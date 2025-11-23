@@ -49,6 +49,9 @@ class Book extends DataObject {
         return $this->Author()->FullName;
     }
 
+    public static function getTitleById($id) {
+        return Book::get()->byID($id)->Title;
+    }
 
 
 

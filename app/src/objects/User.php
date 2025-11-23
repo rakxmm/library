@@ -23,8 +23,7 @@ class User extends DataObject {
         'BookLoans'=>BookLoan::class
     ];
 
-    public function onBeforeWrite()
-    {
+    public function onBeforeWrite() {
         parent::onBeforeWrite();
         $this->FullName = $this->Name . ' ' . $this->Surname;
     }
@@ -52,9 +51,7 @@ class User extends DataObject {
         );
 
         return [$name_field, $surname_field];
-    }
-
-    
+    } 
 
     private function getLoansCMSFields() {
         $loans_fields = GridField::create(
@@ -73,35 +70,7 @@ class User extends DataObject {
         'Surname' => "Surname"
     ];
 
-    public static function getAvailableCopies($userID) {
-        echo $userID;
-        if ($userID == 0) {
-            return BookCopy::get();
-        }
 
-        $userCopiesTitles = BookCopy::get()->filter(['UserID' => $userID]
-            )->column('BookID');
-
-        $copies = BookCopy::get();    
-        if ($userCopiesTitles) {
-            $copies->exclude(
-                [
-                    'BookID' => $userCopiesTitles
-                ]
-            );
-        };
-        return $copies->map('ID', 'Title')->toArray();
-    }
-
-    public static function getBorrowedCopy($userID, $bookID) {
-        
-        if (!$bookID || !$userID) {
-            return;
-        }
-
-        return BookCopy::get()->filter(['isBorrowed'=>true, 'UserID'=>$userID, 'BookID'=>$bookID]);
-
-    }
 
 };
 

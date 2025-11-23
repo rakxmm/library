@@ -19,43 +19,16 @@ use SilverStripe\ORM\DataObject;
 class BookLoan extends DataObject {
 
 
-    private bool $canWrite = false;
-
-    private static $db =
-    [
+    private static $db = [
         'hasExpired' => 'Boolean'
     ];
 
     private static $has_one = [
         'User' => User::class, 
         'BookCopy' => BookCopy::class
-    ];
+    ];      
 
-
-    public function setExpired($bool) {
-        $this->hasExpired = $bool;
-        return $this;
-    }        
-
-    public function onBeforeWrite()
-    {
-        
-        parent::onBeforeWrite(); 
-        
-        $_first_time = $this->isInDB();
-            
-        if (!$_first_time) {
-            $this->BookCopy()->setUser($this->UserID)->updateStatus()->write();
-        } 
-    }
-
-    public function end() {
-        $this->BookCopy()->resetUser()->updateStatus()->write();
-        $this->setExpired(true)->write();
-    }
-
-    public function getCMSFields()
-    {            
+    public function getCMSFields() {            
         
 
         $fields = FieldList::create(
@@ -87,43 +60,13 @@ class BookLoan extends DataObject {
         return $fields;
     }
 
-    public function canEdit($member = null) {
-        if ($this->ID) {
-            return false;
-        }
+    // public function canEdit($member = null) {
+    //     if ($this->ID) {
+    //         return false;
+    //     }
 
-        return parent::canEdit($member);
-    }
-
-
-
-    public function validate() {
-        $result = parent::validate();
-        
-        $userID = $this->UserID;
-        $bookCopyID = $this->BookCopyID;
-
-        if (!$bookCopyID) {
-            $result->addError('Book copy is a required field!');
-        } 
-        if (!$userID) {
-            $result->addError('User is a required field!');
-        }
-
-        $bookCopy = BookCopy::get()->byID($bookCopyID);
-        $bookID = $bookCopy ? $bookCopy->BookID : null;
-
-        $copy = User::getBorrowedCopy($userID, $bookID);
-        
-
-        if ($copy && $copy->exists()) {
-
-            $result->addError("User can't borrow a book with such ISBN!");
-        }
-
-        return $result;
-
-    }
+    //     return parent::canEdit($member);
+    // }
 
     private static $summary_fields = [
         'ID'=>'ID',
@@ -132,10 +75,80 @@ class BookLoan extends DataObject {
         'hasExpired.Nice' => 'Has expired?'
     ];
 
-    public function canDelete($member = null)
-    {
+    public function canDelete($member = null) {
         return false;
     }
+
+    public function validate()
+    {
+        $res = parent::validate();
+
+        if (!$this->UserID) {
+            $res->addError('User field was not filled!');
+        } 
+        if (!$this->BookCopyID) {
+            $res->addError('Book field was not filled!');
+        } 
+        
+
+
+        
+
+        if (!$this->isInDB()) {
+            $bookID = BookCopy::getBooksID($this->BookCopyID);
+
+            if (!$bookID) {
+                return $res;
+            }
+            $already_borrowed = BookCopy::get()->filter([
+                'UserID' => $this->UserID,
+                'BookID' => $bookID,
+                // 'hasExpired' => false // treba odkomentovat
+            ])->exists() ? true : false; 
+
+            if ($already_borrowed) {
+                $res->addError('User has already such book borrowed!');
+            }
+        }
+
+        
+
+        return $res;
+    }
+
+
+    public function onBeforeWrite()
+    {
+        parent::onBeforeWrite();
+        
+        if (!$this->isInDB()) {
+            $book = BookCopy::get()->byID($this->BookCopyID);
+            if ($book && $book->exists()) {
+                $book->setUser($this->UserID)->write();
+            }
+        }
+    
+
+    }
+
+
+
+    public function end() {
+        
+        $copy = $this->BookCopy();
+   
+        $copy->setUser(null)->write();
+        echo $this->hasExpired;
+        
+        $this->expire()->write();
+    }
+
+    private function expire() {
+        $this->hasExpired = true;;
+        return $this;
+    }
+
+
 
     
 
