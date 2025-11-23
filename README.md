@@ -3,7 +3,7 @@
 
 ## Installation
 
-After ```sh gti pull ``` this commands need to be executed!
+After ```sh git clone {url} ``` this commands need to be executed in project folder!
 
 ```sh
 composer require silverstripe/framework
