@@ -103,7 +103,6 @@ class BookLoan extends DataObject {
             $already_borrowed = BookCopy::get()->filter([
                 'UserID' => $this->UserID,
                 'BookID' => $bookID,
-                // 'hasExpired' => false // treba odkomentovat
             ])->exists() ? true : false; 
 
             if ($already_borrowed) {
@@ -138,11 +137,14 @@ class BookLoan extends DataObject {
         $copy = $this->BookCopy();
    
         $copy->setUser(null)->write();
-        echo 'hellou';
         
         $this->expire()->write();
 
         return true;
+    }
+
+    public function canEnd() {
+        return !$this->hasExpired;
     }
 
     private function expire() {

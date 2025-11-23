@@ -2,6 +2,7 @@
 
 namespace objects;
 
+use panels\LoanPanelReturnAction;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
@@ -54,14 +55,17 @@ class User extends DataObject {
     } 
 
     private function getLoansCMSFields() {
-        $loans_fields = GridField::create(
+        $gridfield = GridField::create(
             'BookLoans',
             "User's loans",
             $this->BookLoans(),
             GridFieldConfig_RecordEditor::create()
         )->setName('FullName');
 
-        return $loans_fields;
+        
+        $gridfield->getConfig()->addComponent(new LoanPanelReturnAction());
+            
+        return $gridfield;
     }
 
     private static $summary_fields = [
@@ -69,6 +73,11 @@ class User extends DataObject {
         'Name' => "Name",
         'Surname' => "Surname"
     ];
+
+    public function canDelete($member = null)
+    {
+        return false;
+    }
 
 
 

@@ -37,11 +37,11 @@ class LoanPanel extends ModelAdmin {
             return $form;
         }
 
-        // $config = $gridField->getConfig();
+        $config = $gridField->getConfig();
 
-        // $config->removeComponentsByType(
-        //     GridFieldAddNewButton::class
-        // );
+        $config->removeComponentsByType(
+            GridFieldAddNewButton::class
+        );
 
         $gridField->getConfig()->addComponent(new LoanPanelReturnAction());
 
@@ -64,22 +64,20 @@ class LoanPanelReturnAction implements GridField_ActionProvider, GridField_Colum
 
     public function handleAction(GridField $gridField, $actionName, $arguments, $data)
     {
-        if ($actionName == 'endloan') {
+        if ($actionName != 'endloan') {
+            return;
+        }
+
             $loan = BookLoan::get()->byID($arguments['RecordID']);
             if (!$loan) {
                 Controller::curr()->getResponse()->setStatusCode(404, 'Loan not found!');
                 return;
             }
             
-            try {
-                $loan->end();
-            } catch (Exception $e) {
-                Controller::curr()->getResponse()->setStatusCode(404, 'Loan end failed!');
-                return;
-            }
+            $loan->end();
 
             Controller::curr()->getResponse()->setStatusCode(200, 'Loan ended successfully!');
-        }
+        
     }
 
    
@@ -96,15 +94,19 @@ class LoanPanelReturnAction implements GridField_ActionProvider, GridField_Colum
     public function getColumnContent($gridField, $record, $columnName)
     {
         if ($columnName == 'Actions') {
+
+            if (!$record->canEnd()) return;
+
             $returnField = GridField_FormAction::create(
                 $gridField,
                 'EndLoanAction'.$record->ID,
-                'EndLoan action',
+                'End Loan',
                 'endLoan',
                 ['RecordID'=>$record->ID]
             );
-            $returnField->addExtraClass('btn btn-outline-dark');
-            return $returnField->Field();
+            $returnField->addExtraClass('btn btn-outline-danger btn-hide-outline font-icon-cancel');
+            
+            return $returnField->Field();    
         }
     }   
 
