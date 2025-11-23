@@ -9,11 +9,14 @@ use SebastianBergmann\Environment\Console;
 use Sheadawson\DependentDropdown\Forms\DependentDropdownField;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Dev\Debug;
+use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\SearchableDropdownField;
+use SilverStripe\Forms\TabSet;
 use SilverStripe\ORM\DataObject;
 
 class BookLoan extends DataObject {
@@ -30,9 +33,9 @@ class BookLoan extends DataObject {
 
     public function getCMSFields() {            
         
-
-        $fields = FieldList::create(
-            SearchableDropdownField::create(
+        $fields = FieldList::create(TabSet::create('Root'));
+        $fields->addFieldsToTab('Root.Main',
+            [SearchableDropdownField::create(
                 'UserID',
                 'User',
                 User::get()
@@ -41,7 +44,7 @@ class BookLoan extends DataObject {
                 'BookCopyID',
                 'Book',
                 BookCopy::get()->exclude(['isBorrowed'=>true])
-            )->setLabelField('ID_Title')
+            )->setLabelField('ID_Title')]
 
         );
 
@@ -57,16 +60,16 @@ class BookLoan extends DataObject {
             ));
         }
 
+        if ($this->isInDB() && !$this->hasExpired) {
+            $fields->addFieldToTab('Root.Main',
+                CheckboxField::create('hasExpired', 'Expired')
+            );
+        }
+
         return $fields;
     }
 
-    // public function canEdit($member = null) {
-    //     if ($this->ID) {
-    //         return false;
-    //     }
-
-    //     return parent::canEdit($member);
-    // }
+    
 
     private static $summary_fields = [
         'ID'=>'ID',
@@ -89,9 +92,6 @@ class BookLoan extends DataObject {
         if (!$this->BookCopyID) {
             $res->addError('Book field was not filled!');
         } 
-        
-
-
         
 
         if (!$this->isInDB()) {
@@ -131,6 +131,16 @@ class BookLoan extends DataObject {
 
     }
 
+    public function doEndLoan($data, $form) {
+    // Spusti tvoju existujúcu logiku
+    $this->end();
+
+    // Poskytni spätnú väzbu v CMS
+    $form->sessionMessage('Book successfully returned!', 'good');
+
+    // Refresh CMS form
+    return $this->getCMSFields();
+}
 
 
     public function end() {
